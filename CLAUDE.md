@@ -15,9 +15,9 @@ python3 -m http.server 8000      # then visit http://localhost:8000
 
 Three files, no framework, no bundler:
 
-- **`index.html`** — DOM structure: `<canvas id="board">` (300×600px) for the playfield, `<canvas id="next-canvas">` (120×120px) for the preview, sidebar HUD (`#score`, `#lines`, `#level`), and a shared overlay `#overlay` for both PAUSE and GAME OVER states.
+- **`index.html`** — DOM structure: `<canvas id="board">` (300×600px) for the playfield, `<canvas id="hold-canvas">` (120×120px) for the held piece, `<canvas id="next-canvas">` (120×120px) for the preview, sidebar HUD (`#score`, `#lines`, `#level`), and a shared overlay `#overlay` for both PAUSE and GAME OVER states.
 - **`style.css`** — Dark/retro arcade theme; uses CSS variables, flexbox, and `backdrop-filter` on overlays.
-- **`game.js`** — All game logic (~305 lines, `'use strict'`, no modules).
+- **`game.js`** — All game logic (~380 lines, `'use strict'`, no modules).
 
 ### game.js internals
 
@@ -32,11 +32,12 @@ Three files, no framework, no bundler:
 | Scoring | `LINE_SCORES = [0,100,300,500,800]` × `level`; hard drop +2/cell, soft drop +1/row |
 | Speed | `dropInterval = max(100, 1000 − (level−1) × 90)` ms; level = `floor(lines/10) + 1` |
 | Ghost piece | `ghostY()` — projects current piece down until collision; drawn at `globalAlpha = 0.2` |
-| State flags | `paused`, `gameOver`, `animId` (RAF handle) |
+| Hold piece | `held` (piece type or `null`) + `holdLocked` flag. `tryHold()` swaps current with held; locked until next natural spawn. `drawHold()` dims slot at `alpha 0.35` while locked. Bound to `C`, `ShiftLeft`, `ShiftRight`. |
+| State flags | `paused`, `gameOver`, `holdLocked`, `animId` (RAF handle) |
 
 ### Game flow
 
-`init()` → `spawn()` → `requestAnimationFrame(loop)`. Each frame: accumulate dt → auto-drop or `lockPiece()` → `draw()`. `lockPiece()` = `merge()` + `clearLines()` + `spawn()`. If `spawn()` immediately collides → `endGame()`.
+`init()` → `spawn()` → `requestAnimationFrame(loop)`. Each frame: accumulate dt → auto-drop or `lockPiece()` → `draw()`. `lockPiece()` = `merge()` + `clearLines()` + `spawn()`. `spawn()` resets `holdLocked = false` so the player gets a fresh hold per piece. If `spawn()` immediately collides → `endGame()`.
 
 ## Tunable constants (top of game.js)
 

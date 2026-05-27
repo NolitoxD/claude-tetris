@@ -6,7 +6,7 @@
   <title>Tetris</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body data-skin="retro">
   <div class="wrapper">
     <button id="theme-toggle" class="theme-toggle">
       <span class="toggle-icon">&#9790;</span>
@@ -43,22 +43,96 @@
         <div class="panel-section controls">
           <span class="label">CONTROLS</span>
           <ul>
-            <li><kbd>←</kbd><kbd>→</kbd> mover</li>
-            <li><kbd>↑</kbd> rotar</li>
-            <li><kbd>↓</kbd> bajar</li>
+            <li><kbd>&larr;</kbd><kbd>&rarr;</kbd> mover</li>
+            <li><kbd>&uarr;</kbd> rotar</li>
+            <li><kbd>&darr;</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
             <li><kbd>C</kbd>/<kbd>Shift</kbd> hold</li>
-            <li><kbd>P</kbd> pausa</li>
+            <li><kbd>P</kbd>/<kbd>Esc</kbd> pausa</li>
           </ul>
         </div>
       </aside>
     </div>
 
-    <div id="overlay" class="overlay hidden">
+    <div id="overlay" class="overlay">
       <div class="overlay-box">
-        <p id="overlay-title">GAME OVER</p>
-        <p id="overlay-score"></p>
-        <button id="restart-btn">Reiniciar</button>
+
+        <!-- ============ START SCREEN ============ -->
+        <div class="overlay-screen" id="screen-start">
+          <h2 class="overlay-title">TETRIS</h2>
+          <div class="records-block">
+            <h3 class="records-heading">RÉCORDS</h3>
+            <div class="records-list" id="records-start"></div>
+            <div class="records-stats" id="stats-start"></div>
+          </div>
+          <div class="menu-row">
+            <span class="menu-label">Nivel inicial</span>
+            <select class="menu-select level-select" id="level-select-start"></select>
+          </div>
+          <div class="menu-row">
+            <span class="menu-label">Skin</span>
+            <select class="menu-select skin-select" id="skin-select-start"></select>
+          </div>
+          <div class="menu-actions">
+            <button class="menu-btn primary" data-action="play">Jugar</button>
+            <button class="menu-btn ghost" data-action="reset-records">Resetear records</button>
+          </div>
+        </div>
+
+        <!-- ============ PAUSE SCREEN ============ -->
+        <div class="overlay-screen hidden" id="screen-pause">
+          <h2 class="overlay-title">PAUSA</h2>
+          <div class="menu-actions stacked">
+            <button class="menu-btn primary" data-action="resume">Reanudar</button>
+            <button class="menu-btn" data-action="restart">Reiniciar</button>
+            <button class="menu-btn" data-action="toggle-controls" aria-expanded="false">Ver controles</button>
+          </div>
+          <div class="controls-block hidden" id="pause-controls">
+            <ul>
+              <li><kbd>&larr;</kbd><kbd>&rarr;</kbd> Mover</li>
+              <li><kbd>&uarr;</kbd> / <kbd>X</kbd> Rotar</li>
+              <li><kbd>&darr;</kbd> Bajar</li>
+              <li><kbd>Space</kbd> Caída instantánea</li>
+              <li><kbd>C</kbd> / <kbd>Shift</kbd> Hold</li>
+              <li><kbd>P</kbd> / <kbd>Esc</kbd> Pausa</li>
+            </ul>
+          </div>
+          <div class="menu-row">
+            <span class="menu-label">Nivel inicial</span>
+            <select class="menu-select level-select" id="level-select-pause"></select>
+          </div>
+          <div class="menu-row">
+            <span class="menu-label">Skin</span>
+            <select class="menu-select skin-select" id="skin-select-pause"></select>
+          </div>
+        </div>
+
+        <!-- ============ GAME OVER SCREEN ============ -->
+        <div class="overlay-screen hidden" id="screen-gameover">
+          <h2 class="overlay-title gameover-title">GAME OVER</h2>
+          <p class="final-score" id="final-score"></p>
+
+          <div class="name-input-row hidden" id="name-input-row">
+            <p class="new-record-label">¡Nuevo récord!</p>
+            <div class="menu-row">
+              <span class="menu-label">Nombre</span>
+              <input class="menu-input" id="player-name" maxlength="12" placeholder="ANON" autocomplete="off" />
+            </div>
+            <button class="menu-btn primary" data-action="save-score">Guardar</button>
+          </div>
+
+          <div class="records-block">
+            <h3 class="records-heading">RÉCORDS</h3>
+            <div class="records-list" id="records-gameover"></div>
+            <div class="records-stats" id="stats-gameover"></div>
+          </div>
+
+          <div class="menu-actions">
+            <button class="menu-btn primary" data-action="restart">Jugar de nuevo</button>
+            <button class="menu-btn" data-action="back-to-start">Menú principal</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
